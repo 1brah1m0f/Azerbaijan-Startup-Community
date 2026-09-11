@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  body {
+    background-color: #f8fafc;
+    overflow-x: hidden;
+  }
+
+  /* Anchor targets clear the fixed header. */
+  section[id],
+  main[id] {
+    scroll-margin-top: 7rem;
+  }
+}
+
+/* ============================================================
+   Design-system classes.
+   These live in the components layer so Tailwind utilities written on an
+   element still override them.
+   ============================================================ */
+@layer components {
+  /* --- Surfaces ------------------------------------------------ */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 40px -12px rgba(37, 99, 235, 0.12);
+  }
+
+  /* --- Animated gradient text ---------------------------------- */
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    background-image: linear-gradient(90deg, #00c9a7, #00d2ff, #2563eb, #7c3aed);
+    background-size: 300% auto;
+    animation: textShine 6s linear infinite;
+  }
+
+  /* --- Scroll reveal ------------------------------------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    transform: translateX(-50px);
+  }
+  .reveal-right {
+    transform: translateX(50px);
+  }
+  .reveal-scale {
+    transform: scale(0.9);
+  }
+  .reveal-left.active,
+  .reveal-right.active,
+  .reveal-scale.active {
+    transform: translateX(0) scale(1);
+  }
+  .reveal-delay-1 {
+    transition-delay: 0.1s;
+  }
+  .reveal-delay-2 {
+    transition-delay: 0.2s;
+  }
+  .reveal-delay-3 {
+    transition-delay: 0.3s;
+  }
+
+  /* --- Cards & logos ------------------------------------------- */
+  .tilt-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+  }
+
+  .shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+  }
+
+  .logo-pill {
+    transition: all 0.35s ease;
+    flex-shrink: 0;
+  }
+  .logo-pill:hover {
+    z-index: 2;
+  }
+  .logo-pill img {
+    filter: grayscale(100%) contrast(1.05);
+    opacity: 0.55;
+    transition: all 0.35s ease;
+  }
+  .logo-pill:hover img {
+    filter: grayscale(0) contrast(1);
+    opacity: 1;
+  }
+
+  /* --- Brand click ripple -------------------------------------- */
+  .brand-link {
+    position: relative;
+    cursor: pointer;
+  }
+  .brand-link:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  .brand-ring {
+    position: absolute;
+    border: 3px solid rgba(0, 210, 255, 0.95);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 1;
+    transform: scale(0.4);
+    animation: ringExpand 0.55s ease-out forwards;
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
+  }
+
+  /* --- Background orbs & hero particles ------------------------ */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    filter: blur(80px);
+    mix-blend-mode: multiply;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    bottom: -10px;
+    background: linear-gradient(135deg, #00d2ff, #00c9a7);
+    animation: particleRise linear infinite;
+    opacity: 0;
+  }
+
+  /* --- Pills, tabs & chips ------------------------------------- */
+  .lang-btn {
+    transition: all 0.25s ease;
+  }
+
+  .auth-role-btn {
+    color: #64748b;
+  }
+  .auth-role-btn.active {
+    background: linear-gradient(135deg, #00c9a7, #00d2ff);
+    color: #fff;
+    box-shadow: 0 6px 16px -6px rgba(0, 210, 255, 0.5);
+  }
+
+  /* Selected multi-select chip — same gradient language as the tabs. */
+  .chip-active {
+    background: linear-gradient(135deg, #00c9a7, #00d2ff);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 6px 16px -6px rgba(0, 210, 255, 0.5);
+  }
+
+  .tab-fade {
+    animation: tabFadeIn 0.22s ease;
+  }
+}
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
+@keyframes textShine {
+  to {
+    background-position: 300%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes ringExpand {
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+@keyframes particleRise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(40px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes tabFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .orb,
+  .particle,
+  .text-gradient,
+  .shine::after {
+    animation: none;
+  }
+}
