@@ -6,6 +6,15 @@
    Base
    ============================================================ */
 @layer base {
+  /*
+   * Both html and body clip horizontally: the reveal animations start 50px
+   * off to one side, which would otherwise let the page scroll sideways on
+   * narrow screens before those elements animate in.
+   */
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     background-color: #f8fafc;
     overflow-x: hidden;
