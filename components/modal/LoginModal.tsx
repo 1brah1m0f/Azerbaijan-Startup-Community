@@ -57,11 +57,9 @@ export function LoginModal() {
 
     const parsed = loginSchema.safeParse({ role, name, email, password });
     if (!parsed.success) {
-      const hasEmailIssue = parsed.error.issues.some(
-        (issue) =>
-          issue.path[0] === "email" && issue.message === "invalidEmail",
-      );
-      setError(hasEmailIssue ? d.auth.errorEmail : d.auth.errorMissing);
+      // An empty field is a "fill everything in" problem, not a bad address.
+      const missing = !email.trim() || !password;
+      setError(missing ? d.auth.errorMissing : d.auth.errorEmail);
       return;
     }
 
