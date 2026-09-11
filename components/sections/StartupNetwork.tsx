@@ -44,28 +44,42 @@ function StartupCard({ startup }: { startup: Startup }) {
         <h3 className="font-heading text-xl font-bold text-slate-900">
           {startup.name}
         </h3>
-        <div className="flex flex-wrap items-center gap-2 mt-2">
-          <Tag tone="teal">
-            {startup.sector === TODO ? d.startups.todo : startup.sector}
-          </Tag>
-          <Tag tone="blue">
-            {d.startups.labelStage}:{" "}
-            {startup.stage === TODO ? d.startups.todo : startup.stage}
-          </Tag>
-        </div>
+        {startup.sector !== TODO || startup.stage !== TODO ? (
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            {startup.sector !== TODO ? (
+              <Tag tone="teal">{startup.sector}</Tag>
+            ) : null}
+            {startup.stage !== TODO ? (
+              <Tag tone="blue">
+                {d.startups.labelStage}: {startup.stage}
+              </Tag>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-auto">
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-          {d.startups.labelLooking}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {needs.length > 0 ? (
-            needs.map((need) => <Tag key={need}>{need}</Tag>)
-          ) : (
-            <Tag>{d.startups.todo}</Tag>
-          )}
-        </div>
+        {needs.length > 0 ? (
+          <>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              {d.startups.labelLooking}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {needs.map((need) => (
+                <Tag key={need}>{need}</Tag>
+              ))}
+            </div>
+          </>
+        ) : null}
+
+        {/* Nothing confirmed yet — one quiet marker beats three empty rows. */}
+        {startup.sector === TODO &&
+        startup.stage === TODO &&
+        needs.length === 0 ? (
+          <span className="inline-flex items-center rounded-full border border-dashed border-slate-300 px-2.5 py-1 text-[11px] font-medium text-slate-400">
+            {d.startups.todo}
+          </span>
+        ) : null}
       </div>
 
       <a
