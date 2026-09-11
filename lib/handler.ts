@@ -34,7 +34,16 @@ export function createSubmitHandler<S extends ZodTypeAny>(
       );
     }
 
-    await saveSubmission(kind, parsed.data);
+    try {
+      await saveSubmission(kind, parsed.data);
+    } catch {
+      // The form shows its "try again" notice on a failed response, which is
+      // better than reporting success for a submission that was not stored.
+      return NextResponse.json(
+        { ok: false, error: "save-failed" },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({ ok: true });
   };

@@ -31,7 +31,14 @@ export async function POST(request: Request) {
 
   // Never log the password.
   const { password: _password, ...safe } = parsed.data;
-  await saveSubmission("login", safe);
+
+  // Recording the attempt is a side note; the visitor still needs to be told
+  // that log in is not enabled even if the write fails.
+  try {
+    await saveSubmission("login", safe);
+  } catch {
+    /* already logged in saveSubmission */
+  }
 
   return NextResponse.json({ ok: true, status: "not-enabled" });
 }

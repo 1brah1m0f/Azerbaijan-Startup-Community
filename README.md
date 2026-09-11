@@ -97,10 +97,16 @@ The three forms post to route handlers under `app/api/`:
 Each one validates the body against the same schema the browser used
 (`lib/schemas.ts`), then calls `saveSubmission` in `lib/submissions.ts`.
 
-Right now `saveSubmission` logs the payload to the server console. That is the
-one function to change when you want submissions stored. It is already typed
-and validated, so a Google Sheet webhook, Airtable, or a database insert drops
-straight in — see the comment at the top of that file for both shapes.
+`saveSubmission` inserts the payload into Supabase Postgres, one table per
+form: `startup_submissions`, `mentor_submissions`, `business_inquiries` and
+`login_attempts`. Read them in the Supabase dashboard's table editor. If the
+insert fails the payload is written to the server log so it can be recovered,
+and the form tells the visitor to try again rather than claiming success.
+
+The tables have row level security on with an insert-only policy, so the key
+the site uses can add rows but cannot read anyone's details back. Option
+columns are plain text on purpose: adding a sector to `lib/options.ts` must
+never make the database reject a submission.
 
 Submissions are structured for matchmaking, not just an email capture. Stage,
 sector, needs, expertise and availability arrive as real enum values, so they
@@ -164,6 +170,14 @@ at the top of `scripts/check-forbidden.mjs`.
 
 ## Deploying
 
-Push the repository and import it in Vercel. No environment variables are
-needed as shipped. Add whatever credentials your storage needs once
-`saveSubmission` writes somewhere real.
+The repository is linked to Vercel, so every push to `main` deploys.
+
+Two environment variables are required, both from the Supabase project's API
+settings — see `.env.example`:
+
+| Variable | Holds |
+| --- | --- |
+| `SUPABASE_URL` | The project URL |
+| `SUPABASE_PUBLISHABLE_KEY` | The publishable key |
+
+Neither is prefixed with `NEXT_PUBLIC_`, so they stay on the server.
