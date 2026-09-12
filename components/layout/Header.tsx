@@ -20,6 +20,26 @@ export function Header() {
   const { d, lang, toggleLang } = useLang();
   const { openLogin } = useModal();
   const [menuOpen, setMenuOpen] = useState(false);
+  /** null while unknown, so nothing flashes before the answer arrives. */
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+
+  // Asked for from the browser so the page itself stays statically rendered.
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/auth/me")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body: { signedIn?: boolean } | null) => {
+        if (!cancelled) setSignedIn(Boolean(body?.signedIn));
+      })
+      .catch(() => {
+        if (!cancelled) setSignedIn(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Close the mobile menu if the viewport grows past the breakpoint.
   useEffect(() => {
@@ -74,13 +94,19 @@ export function Header() {
                   {d.nav[item.key]}
                 </a>
               ))}
-              <button
-                type="button"
-                className={cn(underline, "font-medium")}
-                onClick={() => openLogin("startup")}
-              >
-                {d.nav.login}
-              </button>
+              {signedIn ? (
+                <a href="/account" className={underline}>
+                  {d.account.title}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className={cn(underline, "font-medium")}
+                  onClick={() => openLogin("startup")}
+                >
+                  {d.nav.login}
+                </button>
+              )}
             </div>
 
             <button
@@ -142,16 +168,25 @@ export function Header() {
                 {d.nav[item.key]}
               </a>
             ))}
-            <button
-              type="button"
-              className="px-4 py-3 rounded-xl font-medium text-slate-700 text-left hover:bg-white/70 hover:text-brand-teal transition-colors"
-              onClick={() => {
-                setMenuOpen(false);
-                openLogin("startup");
-              }}
-            >
-              {d.nav.login}
-            </button>
+            {signedIn ? (
+              <a
+                href="/account"
+                className="px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-white/70 hover:text-brand-teal transition-colors"
+              >
+                {d.account.title}
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="px-4 py-3 rounded-xl font-medium text-slate-700 text-left hover:bg-white/70 hover:text-brand-teal transition-colors"
+                onClick={() => {
+                  setMenuOpen(false);
+                  openLogin("startup");
+                }}
+              >
+                {d.nav.login}
+              </button>
+            )}
 
             <button
               type="button"
