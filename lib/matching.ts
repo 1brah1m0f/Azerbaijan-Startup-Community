@@ -68,10 +68,36 @@ function coversNeed(need: string, expertise: string[]): boolean {
   return wanted.some((item) => expertise.includes(item));
 }
 
-/** Free-text industries, so this can only ever confirm — never rule out. */
+/**
+ * Splits free-text industries into comparable words.
+ *
+ * Anything that is not a letter or a digit separates one entry from the next,
+ * so "SaaS, Retail / e-commerce" becomes ["saas", "retail", "e", "commerce"].
+ */
+function words(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+}
+
+/**
+ * Free-text industries, so this can only ever confirm — never rule out.
+ *
+ * Matching is per word rather than by substring. A plain `includes` claimed the
+ * sector "AI" was covered by a mentor who wrote "Retail", because the letters
+ * happen to appear inside the word, and that false signal then pushed the wrong
+ * mentor up the ranking.
+ */
 function mentionsSector(sector: string | null, industries: string): boolean {
   if (!sector || !industries.trim()) return false;
-  return industries.toLowerCase().includes(sector.toLowerCase());
+
+  const wanted = words(sector);
+  if (wanted.length === 0) return false;
+
+  const listed = new Set(words(industries));
+  // Multi-word sectors such as "E-commerce" match when every part is present.
+  return wanted.every((word) => listed.has(word));
 }
 
 function listNeeds(needs: string[]): string {
