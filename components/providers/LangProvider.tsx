@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -28,6 +29,14 @@ const STORAGE_KEY = "asc-lang";
 /** Matches the reference site's cross-fade when the language changes. */
 const FADE_MS = 220;
 
+function persist(lang: Lang) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, lang);
+  } catch {
+    /* storage unavailable — the choice just won't persist */
+  }
+}
+
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
 
@@ -47,44 +56,66 @@ export function LangProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLang = useCallback(
-    (next: Lang) => {
-      setLangState((current) => {
-        if (current === next) return current;
-        try {
-          window.localStorage.setItem(STORAGE_KEY, next);
-        } catch {
-          /* storage unavailable — the choice just won't persist */
-        }
-        return next;
-      });
+  const setLang = useCallback((next: Lang) => {
+    setLangState((current) => {
+      if (current === next) return current;
+      persist(next);
+      return next;
+    });
+  }, []);
+
+  // A fade is in flight; a second click must not start another one.
+  const fading = useRef(false);
+  const timers = useRef<number[]>([]);
+
+  useEffect(
+    () => () => {
+      timers.current.forEach((id) => window.clearTimeout(id));
     },
     [],
   );
 
   const toggleLang = useCallback(() => {
-    const next: Lang = lang === "az" ? "en" : "az";
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (reduceMotion) {
-      setLang(next);
+      // Flip off the current value rather than one captured 220ms ago.
+      setLangState((current) => {
+        const next: Lang = current === "az" ? "en" : "az";
+        persist(next);
+        return next;
+      });
       return;
     }
+
+    if (fading.current) return;
+    fading.current = true;
 
     const body = document.body;
     body.style.transition = `opacity ${FADE_MS}ms ease`;
     body.style.opacity = "0";
-    window.setTimeout(() => {
-      setLang(next);
-      body.style.opacity = "1";
+
+    timers.current.push(
       window.setTimeout(() => {
-        body.style.transition = "";
-        body.style.opacity = "";
-      }, FADE_MS + 10);
-    }, FADE_MS);
-  }, [lang, setLang]);
+        setLangState((current) => {
+          const next: Lang = current === "az" ? "en" : "az";
+          persist(next);
+          return next;
+        });
+        body.style.opacity = "1";
+
+        timers.current.push(
+          window.setTimeout(() => {
+            body.style.transition = "";
+            body.style.opacity = "";
+            fading.current = false;
+          }, FADE_MS + 10),
+        );
+      }, FADE_MS),
+    );
+  }, []);
 
   return (
     <LangContext.Provider
