@@ -12,9 +12,17 @@ export const dynamic = "force-dynamic";
 
 type Sheet = { header: string[]; rows: string[][] };
 
-/** A quoted field is always safe; doubling quotes is the whole escape rule. */
+/**
+ * Quoting handles CSV itself, but quoting alone does not stop a spreadsheet
+ * treating a field as a formula. Excel and LibreOffice evaluate any cell whose
+ * text begins with `=`, `+`, `-`, `@`, a tab or a carriage return, and every
+ * column here is text a stranger typed into a public form. Prefixing an
+ * apostrophe makes the spreadsheet read it as text; the apostrophe is not shown
+ * in the cell.
+ */
 function cell(value: string): string {
-  return `"${value.replace(/"/g, '""')}"`;
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${safe.replace(/"/g, '""')}"`;
 }
 
 function toCsv({ header, rows }: Sheet): string {
