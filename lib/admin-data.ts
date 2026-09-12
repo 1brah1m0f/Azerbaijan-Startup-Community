@@ -34,15 +34,37 @@ function adminClient(): SupabaseClient {
   return client;
 }
 
+/**
+ * How many rows to pull per request. Supabase caps a single response at its
+ * project `max-rows` setting (1000 by default) and truncates silently, so the
+ * rows are fetched a page at a time instead of trusting one unbounded select.
+ */
+const PAGE_SIZE = 1000;
+
+/** A ceiling, so a runaway table cannot hang the panel. */
+const MAX_ROWS = 20000;
+
 /** Newest first — the panel is read top to bottom. */
 async function newestFirst(table: string) {
-  const { data, error } = await adminClient()
-    .from(table)
-    .select("*")
-    .order("received_at", { ascending: false });
+  const rows: unknown[] = [];
 
-  if (error) throw new Error(`Could not read ${table}: ${error.message}`);
-  return data ?? [];
+  for (let from = 0; from < MAX_ROWS; from += PAGE_SIZE) {
+    const { data, error } = await adminClient()
+      .from(table)
+      .select("*")
+      .order("received_at", { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw new Error(`Could not read ${table}: ${error.message}`);
+
+    const page = data ?? [];
+    rows.push(...page);
+
+    // A short page means the table is exhausted.
+    if (page.length < PAGE_SIZE) break;
+  }
+
+  return rows as Record<string, unknown>[];
 }
 
 type Row = Record<string, unknown>;
