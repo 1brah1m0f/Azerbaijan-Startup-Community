@@ -1,44 +1,65 @@
 import { NextResponse } from "next/server";
-import { loginSchema } from "@/lib/schemas";
-import { saveSubmission } from "@/lib/submissions";
+import { z } from "zod";
+import { normaliseEmail, sessionClient } from "@/lib/auth";
 
 /**
- * Placeholder login endpoint.
+ * Signs a member in.
  *
- * There is no account system yet, so this validates the credentials' shape,
- * records the attempt, and tells the client that log in is not enabled. The
- * modal shows that as a notice. Swap the body for a real session check when
- * authentication is added — the client already handles a JSON response.
+ * Supabase sets the session as httpOnly cookies through the client built in
+ * `sessionClient`, so the access token never reaches page JavaScript. A wrong
+ * address and a wrong password answer identically, so this cannot be used to
+ * find out who has an account.
+ *
+ * The password is never logged and never stored by this application.
  */
+
+export const dynamic = "force-dynamic";
+
+const schema = z.object({
+  email: z.string().trim().email(),
+  password: z.string().min(1),
+});
+
+const rejected = () =>
+  NextResponse.json({ ok: false, error: "invalid" }, { status: 401 });
+
+/** Costs a guess the same as a real attempt, without feeling broken. */
+const pause = () => new Promise((resolve) => setTimeout(resolve, 500));
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      { ok: false, error: "invalid-json" },
-      { status: 400 },
-    );
+    await pause();
+    return rejected();
   }
 
-  const parsed = loginSchema.safeParse(body);
+  const parsed = schema.safeParse(body);
   if (!parsed.success) {
+    await pause();
+    return rejected();
+  }
+
+  let client;
+  try {
+    client = await sessionClient();
+  } catch {
     return NextResponse.json(
-      { ok: false, error: "invalid-credentials" },
-      { status: 400 },
+      { ok: false, error: "not-configured" },
+      { status: 500 },
     );
   }
 
-  // Never log the password.
-  const { password: _password, ...safe } = parsed.data;
+  const { data, error } = await client.auth.signInWithPassword({
+    email: normaliseEmail(parsed.data.email),
+    password: parsed.data.password,
+  });
 
-  // Recording the attempt is a side note; the visitor still needs to be told
-  // that log in is not enabled even if the write fails.
-  try {
-    await saveSubmission("login", safe);
-  } catch {
-    /* already logged in saveSubmission */
+  if (error || !data.session) {
+    await pause();
+    return rejected();
   }
 
-  return NextResponse.json({ ok: true, status: "not-enabled" });
+  return NextResponse.json({ ok: true });
 }
