@@ -18,7 +18,6 @@ const CARDS = [
     gradient: "from-brand-cyan to-brand-teal",
     shadow: "shadow-brand-cyan/30",
     hover: "hover:shadow-brand-cyan/20",
-    delay: "reveal-delay-1",
   },
   {
     key: "community",
@@ -26,7 +25,6 @@ const CARDS = [
     gradient: "from-brand-teal to-brand-blue",
     shadow: "shadow-brand-teal/30",
     hover: "hover:shadow-brand-teal/20",
-    delay: "reveal-delay-2",
   },
   {
     key: "corporate",
@@ -34,7 +32,6 @@ const CARDS = [
     gradient: "from-brand-blue to-brand-violet",
     shadow: "shadow-brand-blue/30",
     hover: "hover:shadow-brand-blue/20",
-    delay: "reveal-delay-3",
   },
   {
     key: "investor",
@@ -42,7 +39,6 @@ const CARDS = [
     gradient: "from-brand-violet to-brand-cyan",
     shadow: "shadow-brand-violet/30",
     hover: "hover:shadow-brand-violet/20",
-    delay: "reveal-delay-1",
   },
   {
     key: "events",
@@ -50,7 +46,6 @@ const CARDS = [
     gradient: "from-brand-cyan to-brand-blue",
     shadow: "shadow-brand-cyan/30",
     hover: "hover:shadow-brand-cyan/20",
-    delay: "reveal-delay-2",
   },
   {
     key: "global",
@@ -58,7 +53,6 @@ const CARDS = [
     gradient: "from-brand-teal to-brand-violet",
     shadow: "shadow-brand-teal/30",
     hover: "hover:shadow-brand-teal/20",
-    delay: "reveal-delay-3",
   },
 ] as const;
 
@@ -77,12 +71,12 @@ export function Opportunities() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
-          {CARDS.map(({ key, Icon, gradient, shadow, hover, delay }) => {
+          {CARDS.map(({ key, Icon, gradient, shadow, hover }) => {
             const copy = d.opportunities.cards[key];
             return (
               <div
                 key={key}
-                className={`glass-card tilt-card rounded-3xl p-6 md:p-8 group reveal ${delay} hover:shadow-2xl ${hover}`}
+                className={`glass-card tilt-card rounded-3xl p-6 md:p-8 group reveal hover:shadow-2xl ${hover}`}
               >
                 <div
                   className={`w-14 h-14 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg ${shadow}`}

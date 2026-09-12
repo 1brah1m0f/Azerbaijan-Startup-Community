@@ -165,7 +165,7 @@ export function MentorSection() {
           </div>
 
           {/* Right — a mentor profile shown on the brand gradient */}
-          <div className="reveal reveal-right reveal-delay-2 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl relative overflow-hidden">
+          <div className="reveal reveal-right rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl relative overflow-hidden">
             <div
               className="absolute inset-0 bg-gradient-to-br from-brand-blue via-brand-violet to-brand-cyan animate-gradient-x bg-[length:200%_200%]"
               aria-hidden="true"
@@ -193,11 +193,8 @@ export function MentorSection() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-            {mentors.map((mentor, index) => (
-              <div
-                key={`${mentor.name}-${mentor.role}`}
-                className={`reveal reveal-delay-${Math.min(index + 1, 3)}`}
-              >
+            {mentors.map((mentor) => (
+              <div key={`${mentor.name}-${mentor.role}`} className="reveal">
                 <MentorCard mentor={mentor} />
               </div>
             ))}

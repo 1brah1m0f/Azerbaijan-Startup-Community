@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/components/providers/LangProvider";
 import { useModal } from "@/components/providers/ModalProvider";
 import { Button } from "@/components/ui/Button";
 import { Close, Menu } from "@/components/ui/Icons";
+import { useScrolledPast } from "@/hooks/useMotion";
 import { cn } from "@/lib/cn";
 import { scrollToId } from "@/lib/scroll";
 
@@ -22,6 +23,11 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   /** null while unknown, so nothing flashes before the answer arrives. */
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
+
+  const barRef = useRef<HTMLDivElement>(null);
+  // A slightly stronger glass and a soft shadow once the page has scrolled,
+  // so the bar reads as sitting above the content rather than painted onto it.
+  useScrolledPast(barRef, 12);
 
   // Asked for from the browser so the page itself stays statically rendered.
   useEffect(() => {
@@ -60,7 +66,10 @@ export function Header() {
   return (
     <nav className="fixed w-full z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-        <div className="glass rounded-2xl flex items-center justify-between px-4 sm:px-6 py-3">
+        <div
+          ref={barRef}
+          className="glass nav-glass rounded-2xl flex items-center justify-between px-4 sm:px-6 py-3"
+        >
           <a
             href="#hero"
             className="group shrink-0"

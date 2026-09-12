@@ -20,11 +20,8 @@ export function Team() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {team.map((member, index) => (
-            <div
-              key={member.name}
-              className={`group reveal reveal-delay-${Math.min(index + 1, 3)}`}
-            >
+          {team.map((member) => (
+            <div key={member.name} className="group reveal">
               <div className="relative overflow-hidden rounded-2xl mb-4 aspect-square bg-slate-100 shadow-lg">
                 <Image
                   src={member.photo}

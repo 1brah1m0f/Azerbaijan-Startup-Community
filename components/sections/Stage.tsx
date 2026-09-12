@@ -12,7 +12,6 @@ const CARDS = [
     gradient: "from-brand-cyan to-brand-teal",
     shadow: "shadow-brand-cyan/30",
     hover: "hover:shadow-brand-cyan/20",
-    delay: "reveal-delay-1",
   },
   {
     key: "building",
@@ -20,7 +19,6 @@ const CARDS = [
     gradient: "from-brand-teal to-brand-blue",
     shadow: "shadow-brand-teal/30",
     hover: "hover:shadow-brand-teal/20",
-    delay: "reveal-delay-2",
   },
   {
     key: "growing",
@@ -28,7 +26,6 @@ const CARDS = [
     gradient: "from-brand-blue to-brand-violet",
     shadow: "shadow-brand-blue/30",
     hover: "hover:shadow-brand-blue/20",
-    delay: "reveal-delay-3",
   },
 ] as const;
 
@@ -46,7 +43,7 @@ export function Stage() {
             return (
               <div
                 key={card.key}
-                className={`glass-card tilt-card rounded-3xl p-6 md:p-8 group reveal ${card.delay} hover:shadow-2xl ${card.hover}`}
+                className={`glass-card tilt-card rounded-3xl p-6 md:p-8 group reveal hover:shadow-2xl ${card.hover}`}
               >
                 <div
                   className={`w-14 h-14 bg-gradient-to-br ${card.gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg ${card.shadow}`}

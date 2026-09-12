@@ -33,7 +33,7 @@ export function FinalCta() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-5 md:gap-8">
-          <div className="reveal reveal-left reveal-delay-1 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 p-6 sm:p-8 text-center flex flex-col">
+          <div className="reveal reveal-left rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 p-6 sm:p-8 text-center flex flex-col">
             <h3 className="font-heading text-2xl font-bold text-white mb-3">
               {d.finalCta.startup.title}
             </h3>
@@ -48,7 +48,7 @@ export function FinalCta() {
             </div>
           </div>
 
-          <div className="reveal reveal-right reveal-delay-2 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 p-6 sm:p-8 text-center flex flex-col">
+          <div className="reveal reveal-right rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 p-6 sm:p-8 text-center flex flex-col">
             <h3 className="font-heading text-2xl font-bold text-white mb-3">
               {d.finalCta.mentor.title}
             </h3>
