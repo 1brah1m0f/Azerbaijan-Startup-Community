@@ -83,3 +83,68 @@ export function sessionCookieOptions() {
 export function pauseAfterFailure(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 700));
 }
+
+/**
+ * Attempt limiting.
+ *
+ * The pause above only delays one request at a time, so a hundred parallel
+ * requests still buy a hundred guesses. Counting attempts per caller closes
+ * that: after `MAX_ATTEMPTS` failures the address is refused outright for
+ * `LOCKOUT_MS`, whether or not the password is right.
+ *
+ * The counter lives in the running instance's memory. On serverless that means
+ * it resets when an instance is recycled and is not shared between instances,
+ * so it raises the cost of guessing rather than making it impossible. A shared
+ * store would be needed to make the limit exact.
+ */
+
+const MAX_ATTEMPTS = 8;
+const WINDOW_MS = 15 * 60 * 1000;
+const LOCKOUT_MS = 15 * 60 * 1000;
+
+type Attempts = { count: number; first: number; blockedUntil: number };
+
+const attempts = new Map<string, Attempts>();
+
+/** Keeps the map from growing without bound on a long-lived instance. */
+function prune(now: number) {
+  if (attempts.size < 1000) return;
+  for (const [key, entry] of attempts) {
+    if (entry.blockedUntil < now && now - entry.first > WINDOW_MS) {
+      attempts.delete(key);
+    }
+  }
+}
+
+/** Identifies the caller for rate limiting. Falls back to a shared bucket. */
+export function callerKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]!.trim();
+  return request.headers.get("x-real-ip") ?? "unknown";
+}
+
+export function isLockedOut(key: string, now: number = Date.now()): boolean {
+  const entry = attempts.get(key);
+  return entry !== undefined && entry.blockedUntil > now;
+}
+
+export function recordFailure(key: string, now: number = Date.now()): void {
+  prune(now);
+  const entry = attempts.get(key);
+
+  if (!entry || now - entry.first > WINDOW_MS) {
+    attempts.set(key, { count: 1, first: now, blockedUntil: 0 });
+    return;
+  }
+
+  entry.count += 1;
+  if (entry.count >= MAX_ATTEMPTS) {
+    entry.blockedUntil = now + LOCKOUT_MS;
+    entry.count = 0;
+    entry.first = now;
+  }
+}
+
+export function clearFailures(key: string): void {
+  attempts.delete(key);
+}

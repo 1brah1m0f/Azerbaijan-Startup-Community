@@ -2,9 +2,13 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   ADMIN_COOKIE,
+  callerKey,
+  clearFailures,
+  isLockedOut,
   issueSession,
   passwordMatches,
   pauseAfterFailure,
+  recordFailure,
   sessionCookieOptions,
 } from "@/lib/admin-auth";
 
@@ -21,19 +25,29 @@ const rejected = () =>
   NextResponse.json({ ok: false, error: "invalid" }, { status: 401 });
 
 export async function POST(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const caller = callerKey(request);
+
+  // Answers the same way as a wrong password, so probing cannot map the limit.
+  if (isLockedOut(caller)) {
     await pauseAfterFailure();
     return rejected();
   }
 
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
+  const fail = async () => {
+    recordFailure(caller);
     await pauseAfterFailure();
     return rejected();
+  };
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return fail();
   }
+
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return fail();
 
   let allowed = false;
   try {
@@ -47,11 +61,9 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!allowed) {
-    await pauseAfterFailure();
-    return rejected();
-  }
+  if (!allowed) return fail();
 
+  clearFailures(caller);
   const response = NextResponse.json({ ok: true });
   response.cookies.set(ADMIN_COOKIE, issueSession(), sessionCookieOptions());
   return response;
