@@ -19,6 +19,7 @@ const NAV_ITEMS = [
 
 export function Header() {
   const { d, lang, toggleLang } = useLang();
+  const [isDark, setIsDark] = useState<boolean | null>(null);
   const { openLogin } = useModal();
   const [menuOpen, setMenuOpen] = useState(false);
   /** null while unknown, so nothing flashes before the answer arrives. */
@@ -55,6 +56,37 @@ export function Header() {
     return () => query.removeEventListener("change", onChange);
   }, []);
 
+  // Theme handling: prefer saved preference, fall back to system.
+  useEffect(() => {
+    const saved = typeof window !== "undefined" && localStorage.getItem("theme");
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDark(true);
+    } else if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+      setIsDark(false);
+    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.add("dark");
+      setIsDark(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setIsDark(false);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nowDark = !(document.documentElement.classList.contains("dark"));
+    if (nowDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      setIsDark(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      setIsDark(false);
+    }
+  };
+
   const go = (id: string) => {
     setMenuOpen(false);
     scrollToId(id);
@@ -79,7 +111,7 @@ export function Header() {
             }}
           >
             <Image
-              src="/logos/asc-logo-tight.png"
+              src={isDark ? "/logos/asc-transparent.png" : "/logos/asc-logo-tight.png"}
               alt="Azerbaijan Startup Community"
               width={168}
               height={82}
@@ -128,6 +160,16 @@ export function Header() {
               <span className={lang === "az" ? "" : "opacity-40"}>AZ</span>
               <span className="opacity-40">/</span>
               <span className={lang === "en" ? "" : "opacity-40"}>EN</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="ml-2 w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-100 dark:hover:bg-white/6 transition-colors"
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? "☀️" : "🌙"}
             </button>
 
             <Button
