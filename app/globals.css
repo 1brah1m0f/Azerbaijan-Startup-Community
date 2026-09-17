@@ -20,6 +20,19 @@
     overflow-x: hidden;
   }
 
+    /* Dark mode: respects user preference and .dark class */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #071024;
+        color: #e6eef8;
+      }
+    }
+
+    .dark body {
+      background-color: #071024;
+      color: #e6eef8;
+    }
+
   /* Anchor targets clear the fixed header. */
   section[id],
   main[id] {
@@ -39,6 +52,44 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  /* Dark variants for shared components */
+  @media (prefers-color-scheme: dark), .dark {
+    .glass {
+      background: rgba(6, 10, 17, 0.6) !important;
+      border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .glass-card {
+      background: rgba(8, 12, 20, 0.7) !important;
+      border: 1px solid rgba(255, 255, 255, 0.04) !important;
+      box-shadow: 0 10px 40px -12px rgba(2, 6, 23, 0.6) !important;
+    }
+
+    /* Modal/dialog adjustments */
+    [role="dialog"] {
+      background-color: #071024 !important;
+      color: #e6eef8 !important;
+      border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    }
+
+    /* Inputs in dark mode */
+    input, textarea, select {
+      background-color: #071425 !important;
+      color: #e6eef8 !important;
+      border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+
+    /* Buttons and interactive text */
+    .auth-role-btn, .brand-link, .chip-active {
+      color: inherit !important;
+    }
+
+    .text-slate-900 { color: #e6eef8 !important; }
+    .text-slate-700 { color: #c9d7ea !important; }
+    .text-slate-500 { color: #9fb0c7 !important; }
+    .border-slate-200 { border-color: rgba(255,255,255,0.06) !important; }
   }
 
   /* The header bar, once the page has scrolled past its own height. */
