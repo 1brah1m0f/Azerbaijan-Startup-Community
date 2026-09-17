@@ -135,7 +135,7 @@ export function LoginModal() {
   };
 
   const inputClasses =
-    "w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all";
+    "w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 dark:bg-[#071425] dark:text-[#e6eef8] dark:placeholder:text-slate-500 dark:border-[rgba(255,255,255,0.06)]";
 
   return (
     <div
@@ -210,9 +210,9 @@ export function LoginModal() {
         <form onSubmit={onSubmit} noValidate className="space-y-4 tab-fade" key={mode}>
           <div className="space-y-1.5">
             <label
-              htmlFor="auth-email"
-              className="text-sm font-semibold text-slate-700"
-            >
+                htmlFor="auth-email"
+                className="text-sm font-semibold text-slate-700 dark:text-slate-200"
+              >
               {d.auth.email}
             </label>
             <input
@@ -229,7 +229,7 @@ export function LoginModal() {
           <div className="space-y-1.5">
             <label
               htmlFor="auth-password"
-              className="text-sm font-semibold text-slate-700 flex items-baseline gap-2"
+              className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-baseline gap-2"
             >
               <span>{d.auth.password}</span>
               {signup ? (
@@ -251,12 +251,12 @@ export function LoginModal() {
 
           {error ? (
             <div className="space-y-2 text-center">
-              <p className="text-sm text-rose-600 font-medium">{error}</p>
+              <p className="text-sm text-rose-600 dark:text-rose-400 font-medium">{error}</p>
               {offerForm ? (
                 <button
                   type="button"
                   onClick={goToRegistration}
-                  className="text-sm text-brand-teal font-semibold hover:text-brand-blue transition-colors"
+                  className="text-sm text-brand-teal font-semibold hover:text-brand-blue transition-colors dark:text-brand-teal"
                 >
                   {d.auth.goToForm}
                 </button>

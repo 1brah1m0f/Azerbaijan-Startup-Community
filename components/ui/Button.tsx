@@ -32,7 +32,7 @@ const base: Record<ButtonVariant, string> = {
   heroPrimary:
     "group relative px-6 sm:px-8 py-3.5 sm:py-4 bg-brand-blue text-white rounded-full font-semibold text-base sm:text-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all hover:scale-105 duration-300 shine",
   heroSecondary:
-    "group px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-semibold text-base sm:text-lg text-brand-blue border-2 border-brand-blue/20 hover:border-brand-cyan hover:text-brand-teal transition-all duration-300 hover:scale-105 bg-white/60 backdrop-blur-sm",
+    "group px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-semibold text-base sm:text-lg text-brand-blue border-2 border-brand-blue/20 hover:border-brand-cyan hover:text-brand-teal transition-all duration-300 hover:scale-105 bg-white/60 backdrop-blur-sm dark:bg-white/6 dark:text-white/90 dark:border-[rgba(255,255,255,0.06)]",
   submit:
     "relative group w-full overflow-hidden bg-gradient-to-r from-brand-teal via-brand-cyan to-brand-blue bg-[length:200%_auto] hover:bg-right text-white font-semibold py-4 rounded-xl transition-all duration-500 shadow-lg shadow-brand-cyan/20 transform hover:-translate-y-1 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed",
   white:

@@ -114,7 +114,7 @@ function MentorCard({
 
 export function MentorSection() {
   const { d } = useLang();
-  const sample = mentors[0];
+  const hasMentors = mentors.length > 0;
 
   return (
     <section id="mentors" className="relative z-10 py-16 md:py-24 lg:py-32">
@@ -164,7 +164,7 @@ export function MentorSection() {
             </p>
           </div>
 
-          {/* Right — a mentor profile shown on the brand gradient */}
+          {/* Right — show a highlighted area or CTA when no real mentor is available */}
           <div className="reveal reveal-right rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl relative overflow-hidden">
             <div
               className="absolute inset-0 bg-gradient-to-br from-brand-blue via-brand-violet to-brand-cyan animate-gradient-x bg-[length:200%_200%]"
@@ -174,11 +174,27 @@ export function MentorSection() {
               className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/30 rounded-full mix-blend-screen filter blur-[50px] animate-blob"
               aria-hidden="true"
             />
-            <div className="relative z-10">
-              <span className="inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white mb-5">
-                {d.mentors.sampleBadge}
-              </span>
-              {sample ? <MentorCard mentor={sample} onDark /> : null}
+            <div className="relative z-10 text-center py-12">
+              {!hasMentors ? (
+                <>
+                  <p className="text-sm text-white/90 mb-4 max-w-xs mx-auto">
+                    {d.mentors.note ?? "We are onboarding mentors. Join as a mentor to be featured here."}
+                  </p>
+                  <a
+                    href="#join-mentor"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToId("join-mentor");
+                    }}
+                    className="inline-flex items-center gap-2 text-white font-semibold bg-white/10 px-4 py-2 rounded-full"
+                  >
+                    {d.mentors.cta}
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </>
+              ) : (
+                mentors[0] && <MentorCard mentor={mentors[0]} onDark />
+              )}
             </div>
           </div>
         </div>
