@@ -22,6 +22,7 @@ export const az = {
     joinMentor: "Mentor ol",
     menu: "Menyu",
     switchLang: "Dili dəyiş / Switch language",
+    toggleTheme: "Gündüz / gecə rejimi",
   },
 
   hero: {

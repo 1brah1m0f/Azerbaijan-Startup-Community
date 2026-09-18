@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/cn";
 
 const controlClasses =
-  "w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all bg-white/50";
+  "w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all bg-white/50 text-slate-900";
 
 function Label({
   htmlFor,

@@ -21,6 +21,7 @@ export const en: Dictionary = {
     joinMentor: "Become a mentor",
     menu: "Menu",
     switchLang: "Dili dəyiş / Switch language",
+    toggleTheme: "Day / night mode",
   },
 
   hero: {

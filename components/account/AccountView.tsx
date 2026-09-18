@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/components/providers/LangProvider";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Tag } from "@/components/ui/ChipGroup";
 import { Check, Close } from "@/components/ui/Icons";
 import type { MemberPage, MemberMatch, StartupSummary } from "@/lib/member-data";
@@ -237,13 +237,7 @@ export function AccountView({
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-4 flex items-center justify-between gap-4">
           <Link href="/" className="shrink-0">
-            <Image
-              src="/logos/asc-logo-tight.png"
-              alt="Azerbaijan Startup Community"
-              width={168}
-              height={82}
-              className="h-10 sm:h-12 w-auto object-contain"
-            />
+            <BrandLogo className="h-10 sm:h-12" />
           </Link>
           <div className="flex items-center gap-4 sm:gap-6 min-w-0">
             <span className="text-sm text-slate-500 truncate hidden sm:inline">

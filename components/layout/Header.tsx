@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/components/providers/LangProvider";
 import { useModal } from "@/components/providers/ModalProvider";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { Close, Menu } from "@/components/ui/Icons";
+import { Close, Menu, Moon, Sun } from "@/components/ui/Icons";
 import { useScrolledPast } from "@/hooks/useMotion";
 import { cn } from "@/lib/cn";
 import { scrollToId } from "@/lib/scroll";
@@ -19,7 +19,6 @@ const NAV_ITEMS = [
 
 export function Header() {
   const { d, lang, toggleLang } = useLang();
-  const [isDark, setIsDark] = useState<boolean | null>(null);
   const { openLogin } = useModal();
   const [menuOpen, setMenuOpen] = useState(false);
   /** null while unknown, so nothing flashes before the answer arrives. */
@@ -56,35 +55,10 @@ export function Header() {
     return () => query.removeEventListener("change", onChange);
   }, []);
 
-  // Theme handling: prefer saved preference, fall back to system.
-  useEffect(() => {
-    const saved = typeof window !== "undefined" && localStorage.getItem("theme");
-    if (saved === "dark") {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-    } else if (saved === "light") {
-      document.documentElement.classList.remove("dark");
-      setIsDark(false);
-    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-    } else {
-      document.documentElement.classList.remove("dark");
-      setIsDark(false);
-    }
-  }, []);
-
   const toggleTheme = () => {
-    const nowDark = !(document.documentElement.classList.contains("dark"));
-    if (nowDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setIsDark(true);
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setIsDark(false);
-    }
+    const nextDark = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", nextDark);
+    localStorage.setItem("theme", nextDark ? "dark" : "light");
   };
 
   const go = (id: string) => {
@@ -110,13 +84,9 @@ export function Header() {
               go("hero");
             }}
           >
-            <Image
-              src={isDark ? "/logos/asc-transparent.png" : "/logos/asc-logo-tight.png"}
-              alt="Azerbaijan Startup Community"
-              width={168}
-              height={82}
+            <BrandLogo
               priority
-              className="h-12 sm:h-16 lg:h-20 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+              className="h-12 sm:h-16 lg:h-20 transition-transform duration-500 group-hover:scale-105"
             />
           </a>
 
@@ -165,11 +135,12 @@ export function Header() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="ml-2 w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-100 dark:hover:bg-white/6 transition-colors"
-              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+              title={d.nav.toggleTheme}
+              aria-label={d.nav.toggleTheme}
             >
-              {isDark ? "☀️" : "🌙"}
+              <Sun className="hidden h-4 w-4 dark:block" />
+              <Moon className="h-4 w-4 dark:hidden" />
             </button>
 
             <Button
@@ -190,7 +161,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen((open) => !open)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors shrink-0"
+              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors shrink-0 dark:text-slate-200"
               aria-label={d.nav.menu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"

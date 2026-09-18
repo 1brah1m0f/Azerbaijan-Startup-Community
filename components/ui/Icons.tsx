@@ -115,6 +115,18 @@ export const Globe = (p: IconProps) => (
     {...p}
   />
 );
+export const Sun = (p: IconProps) => (
+  <Stroke
+    d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+    {...p}
+  />
+);
+export const Moon = (p: IconProps) => (
+  <Stroke
+    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+    {...p}
+  />
+);
 
 /* Social (filled) */
 export const Instagram = (p: IconProps) => (

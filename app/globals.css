@@ -15,23 +15,25 @@
     overflow-x: hidden;
   }
 
-  body {
-    background-color: #f8fafc;
-    overflow-x: hidden;
+  :root {
+    color-scheme: light;
   }
 
-    /* Dark mode: respects user preference and .dark class */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #071024;
-        color: #e6eef8;
-      }
-    }
+  html.dark {
+    color-scheme: dark;
+  }
 
-    .dark body {
-      background-color: #071024;
-      color: #e6eef8;
-    }
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html.dark body {
+    background-color: #071024;
+    color: #e6eef8;
+  }
 
   /* Anchor targets clear the fixed header. */
   section[id],
@@ -52,44 +54,12 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.55);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
-  /* Dark variants for shared components */
-  @media (prefers-color-scheme: dark), .dark {
-    .glass {
-      background: rgba(6, 10, 17, 0.6) !important;
-      border: 1px solid rgba(255, 255, 255, 0.04) !important;
-    }
-
-    .glass-card {
-      background: rgba(8, 12, 20, 0.7) !important;
-      border: 1px solid rgba(255, 255, 255, 0.04) !important;
-      box-shadow: 0 10px 40px -12px rgba(2, 6, 23, 0.6) !important;
-    }
-
-    /* Modal/dialog adjustments */
-    [role="dialog"] {
-      background-color: #071024 !important;
-      color: #e6eef8 !important;
-      border: 1px solid rgba(255, 255, 255, 0.04) !important;
-    }
-
-    /* Inputs in dark mode */
-    input, textarea, select {
-      background-color: #071425 !important;
-      color: #e6eef8 !important;
-      border-color: rgba(255, 255, 255, 0.06) !important;
-    }
-
-    /* Buttons and interactive text */
-    .auth-role-btn, .brand-link, .chip-active {
-      color: inherit !important;
-    }
-
-    .text-slate-900 { color: #e6eef8 !important; }
-    .text-slate-700 { color: #c9d7ea !important; }
-    .text-slate-500 { color: #9fb0c7 !important; }
-    .border-slate-200 { border-color: rgba(255,255,255,0.06) !important; }
+  html.dark .glass {
+    background: rgba(8, 16, 32, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   /* The header bar, once the page has scrolled past its own height. */
@@ -101,6 +71,10 @@
     background: rgba(255, 255, 255, 0.85);
     box-shadow: 0 10px 30px -14px rgba(15, 23, 42, 0.22);
   }
+  html.dark .nav-glass[data-scrolled="true"] {
+    background: rgba(8, 16, 32, 0.92);
+    box-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.55);
+  }
 
   .glass-card {
     background: rgba(255, 255, 255, 0.85);
@@ -108,6 +82,12 @@
     backdrop-filter: blur(18px);
     border: 1px solid rgba(255, 255, 255, 0.85);
     box-shadow: 0 10px 40px -12px rgba(37, 99, 235, 0.12);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  html.dark .glass-card {
+    background: rgba(12, 22, 40, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.55);
   }
 
   /* --- Animated gradient text ---------------------------------- */
@@ -188,20 +168,41 @@
   }
 
   .logo-pill {
-    transition: all 0.35s ease;
+    transition: transform 0.35s ease;
     flex-shrink: 0;
   }
   .logo-pill:hover {
     z-index: 2;
   }
-  .logo-pill img {
-    filter: grayscale(100%) contrast(1.05);
-    opacity: 0.55;
-    transition: all 0.35s ease;
-  }
-  .logo-pill:hover img {
-    filter: grayscale(0) contrast(1);
+  .logo-pill img,
+  .partner-card img {
+    filter: none;
     opacity: 1;
+    transition: transform 0.35s ease;
+  }
+
+  /*
+   * Partner / startup marks sit on a light well in night mode so dark
+   * wordmarks stay readable. Day mode uses the card itself as the plate.
+   */
+  .logo-well {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: fit-content;
+    max-width: 100%;
+  }
+  html.dark .logo-well {
+    background: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  html.dark .partner-card .logo-well {
+    width: 100%;
+    justify-content: center;
+    background: #f8fafc;
   }
 
   /* --- Brand click ripple -------------------------------------- */
@@ -232,6 +233,10 @@
     filter: blur(80px);
     mix-blend-mode: multiply;
   }
+  html.dark .orb {
+    mix-blend-mode: screen;
+    opacity: 0.4;
+  }
 
   .particle {
     position: absolute;
@@ -250,6 +255,9 @@
 
   .auth-role-btn {
     color: #64748b;
+  }
+  html.dark .auth-role-btn {
+    color: #9fb0c7;
   }
   .auth-role-btn.active {
     background: linear-gradient(135deg, #00c9a7, #00d2ff);
@@ -323,6 +331,33 @@
     transform: translateY(0);
   }
 }
+
+/* ============================================================
+   Dark-mode remaps for the existing light-theme utilities.
+   html.dark beats Tailwind's single-class utilities without !important,
+   and without the prefers-color-scheme media query fighting the toggle.
+   .bg-white is remapped to an elevated dark surface. Buttons that must
+   stay white (the photo-band CTAs) use Tailwind !bg-white.
+   ============================================================ */
+html.dark .bg-white { background-color: #0c1829; }
+html.dark .text-slate-900 { color: #e8eef7; }
+html.dark .text-slate-800 { color: #d7e2f0; }
+html.dark .text-slate-700 { color: #c5d3e6; }
+html.dark .text-slate-600 { color: #a8b9d0; }
+html.dark .text-slate-500 { color: #8fa3bc; }
+html.dark .text-slate-400 { color: #7b91ab; }
+html.dark .border-slate-200 { border-color: rgba(255, 255, 255, 0.1); }
+html.dark .border-slate-100 { border-color: rgba(255, 255, 255, 0.07); }
+html.dark .border-slate-300 { border-color: rgba(255, 255, 255, 0.14); }
+html.dark .bg-slate-50 { background-color: #071024; }
+html.dark .bg-slate-100 { background-color: rgba(255, 255, 255, 0.07); }
+html.dark .bg-white\/70 { background-color: rgba(255, 255, 255, 0.06); }
+html.dark .bg-white\/60 { background-color: rgba(255, 255, 255, 0.05); }
+html.dark .bg-white\/50 { background-color: rgba(12, 22, 40, 0.72); }
+html.dark .hover\:bg-slate-100:hover { background-color: rgba(255, 255, 255, 0.1); }
+html.dark .hover\:bg-slate-200:hover { background-color: rgba(255, 255, 255, 0.12); }
+html.dark .hover\:bg-white\/70:hover { background-color: rgba(255, 255, 255, 0.08); }
+html.dark .placeholder\:text-slate-400::placeholder { color: #7b91ab; }
 
 @keyframes enterUp {
   from {
