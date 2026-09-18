@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useLang } from "@/components/providers/LangProvider";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { Instagram, LinkedIn } from "@/components/ui/Icons";
 import { scrollToId } from "@/lib/scroll";
 
@@ -28,13 +28,7 @@ export function Footer() {
               scrollToId("hero");
             }}
           >
-            <Image
-              src="/logos/asc-logo-tight.png"
-              alt="Azerbaijan Startup Community"
-              width={168}
-              height={82}
-              className="h-24 sm:h-32 w-auto object-contain group-hover:scale-110 transition-transform duration-500"
-            />
+            <BrandLogo className="h-24 sm:h-32 transition-transform duration-500 group-hover:scale-110" />
           </a>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 font-medium text-slate-500">

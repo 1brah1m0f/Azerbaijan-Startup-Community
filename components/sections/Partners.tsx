@@ -34,13 +34,13 @@ export function Partners() {
             rel="noopener noreferrer"
             className="partner-card brand-link group rounded-2xl glass-card h-28 sm:h-32 flex flex-col items-center justify-center gap-2 p-5 hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
-            <div className="relative w-full h-12">
+            <div className="logo-well relative w-full h-12">
               <Image
                 src={partner.logo}
                 alt={partner.alt}
                 fill
                 sizes="(max-width: 640px) 40vw, 200px"
-                className="object-contain opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <span className="text-[11px] font-semibold text-slate-400 group-hover:text-slate-600 transition-colors">

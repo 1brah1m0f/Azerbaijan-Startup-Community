@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import { LangProvider } from "@/components/providers/LangProvider";
 import { ModalProvider } from "@/components/providers/ModalProvider";
 import { az } from "@/locales/az";
+import { themeInitScript } from "@/lib/theme-script";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,7 +43,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="az" className={`${inter.variable} ${spaceGrotesk.variable} scroll-smooth`}>
+    <html
+      lang="az"
+      className={`${inter.variable} ${spaceGrotesk.variable} scroll-smooth`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="font-sans antialiased selection:bg-brand-cyan selection:text-white">
         <LangProvider>
           <ModalProvider>{children}</ModalProvider>

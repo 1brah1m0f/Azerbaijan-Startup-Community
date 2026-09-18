@@ -24,7 +24,7 @@ function StartupCard({ startup }: { startup: Startup }) {
 
   return (
     <div className="glass-card rounded-3xl p-6 flex flex-col gap-4 hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 group reveal">
-      <div className="logo-pill h-12 flex items-center">
+      <div className="logo-pill logo-well h-12 flex items-center">
         {startup.logo ? (
           <Image
             src={startup.logo}
