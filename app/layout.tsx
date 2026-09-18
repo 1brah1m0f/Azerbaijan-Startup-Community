@@ -23,7 +23,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: az.meta.title,
   description: az.meta.description,
-  icons: { icon: "/logos/asc-transparent.png" },
+  icons: { icon: "/logos/asc-logo-tight.png" },
   openGraph: {
     title: az.meta.title,
     description: az.meta.description,
@@ -34,7 +34,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f8fafc",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#071024" },
+  ],
 };
 
 export default function RootLayout({
