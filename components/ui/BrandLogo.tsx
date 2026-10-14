@@ -19,16 +19,16 @@ export function BrandLogo({
       <Image
         src="/logos/asc-logo-tight.png"
         alt={alt}
-        width={168}
-        height={82}
+        width={869}
+        height={432}
         priority={priority}
         className="h-full w-auto object-contain dark:hidden"
       />
       <Image
         src="/logos/asc-logo-dark.png"
         alt={alt}
-        width={168}
-        height={82}
+        width={869}
+        height={432}
         priority={priority}
         className="hidden h-full w-auto object-contain dark:block"
       />

@@ -23,7 +23,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: az.meta.title,
   description: az.meta.description,
-  icons: { icon: "/logos/asc-logo-tight.png" },
+  icons: { icon: "/logos/asc-icon.png", apple: "/logos/asc-icon.png" },
   openGraph: {
     title: az.meta.title,
     description: az.meta.description,
